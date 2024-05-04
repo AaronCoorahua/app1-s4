@@ -1,13 +1,19 @@
-name: myapp
-
 services:
   api-students:
     build: ./api-students
     image: gcolchado/api-students
     ports:
-      - 8000:8000
+      - "8001:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   websimple:
     build: ./websimple
     image: gcolchado/websimple
     ports:
-      - 8080:80
+      - "8080:80"
+    depends_on:
+      api-students:
+        condition: service_healthy
